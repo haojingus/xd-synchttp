@@ -1,10 +1,10 @@
 language: node_js
 node_js:
- - "8.0.0"
  - "8.9.0"
+ - "9.0.0"
  - "10.0.0"
 before_script:
- - npm install node-gyp
+ - npm install -g node-gyp
  - cd src
  - node-gyp configure&&node-gyp build
 
