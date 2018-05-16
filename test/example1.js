@@ -1,5 +1,5 @@
 'use strict';
-const synchttp = require('../vendor/linux-x86-amd64/binding');
+const synchttp = require('../src/build/Release/binding');
 let content = "";
 try{
 	content = synchttp.http_get("http://www.baidu.com",10);
