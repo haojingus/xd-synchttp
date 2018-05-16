@@ -1,7 +1,7 @@
 #include "http.c"
 
 #include <node_api.h>
-#include "../common.h"
+#include "common.h"
 
 static napi_value http_get(napi_env env, napi_callback_info info) {
   size_t argc = 2;
