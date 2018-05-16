@@ -1,4 +1,5 @@
-const synchttp = require('xd-synchttp');
+'use strict';
+const synchttp = require('../vendor/linux-x86-amd64/binding');
 let content = "";
 try{
 	content = synchttp.http_get("http://www.baidu.com",10);
