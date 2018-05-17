@@ -112,8 +112,8 @@ void chunk_decode(HTTPDATA* source)
 	bzero(source->hd_response_header,HEADERSIZE);
 	
 	memcpy(source->hd_response_header,source->hd_response,body_start_pos);
-
-	char *ptr_field_header = strstr(source->hd_response,"Transfer-Encoding: chunked");
+	//printf("HTTP HEADER:\n%s\n",source->hd_response_header);
+	//char *ptr_field_header = strstr(source->hd_response,"Transfer-Encoding: chunked");
 	int body_length = 0;
 
 	char sz_chunk_flag[10];
@@ -162,9 +162,9 @@ void chunk_decode(HTTPDATA* source)
 	}
 
 	char *sz_chunk_header = (char*)malloc(4096);
-	int chunk_pos = ptr_field_header - source->hd_response;
-	if (body_start_pos-chunk_pos<=0)
-		return;
+	//int chunk_pos = ptr_field_header - source->hd_response;
+	//if (body_start_pos-chunk_pos<=0)
+	//	return;
 	//游标指向body开始
 	char *p_cursor = source->hd_response+body_start_pos;
 
@@ -481,98 +481,23 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   //exit(0);
 }
 /*
-
-
-static napi_value HttpGET(napi_env env, napi_callback_info info) {
-  size_t argc = 2;
-  napi_value args[2];
-  NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, NULL, NULL));
-
-  NAPI_ASSERT(env, argc >= 1, "Wrong number of arguments");
-
-  napi_valuetype valuetype0;
-  NAPI_CALL(env, napi_typeof(env, args[0], &valuetype0));
-
-  napi_valuetype valuetype1;
-  NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
-
-  NAPI_ASSERT(env, valuetype0 == napi_string ,"Wrong argument type. String expected.");
-
-  char value0[1024];
-  int n_result;
-  NAPI_CALL(env, napi_get_value_string_utf8(env, args[0], value0, 1024,&n_result));
-
-  int value1;
-  NAPI_CALL(env, napi_get_value_int32(env, args[1], &value1));
-
-  napi_value result;
-
-  HTTPDATA* ptr = (HTTPDATA*)malloc(sizeof(HTTPDATA));
-  ptr->hd_response = (char*)malloc(2048);
-  bzero(ptr->hd_response,2048);
-  ptr->hd_size = 2048;
-  ptr->hd_used = 0;
-  ptr->hd_response_header = (char*)malloc(HEADERSIZE);
-
-  bzero(ptr->hd_response,ptr->hd_size);
-  int ret = http(ptr,value0,value1);
-  switch(ret)
-  {
-	case 0:
-		chunk_decode(ptr);
-		break;
-	case -1:
-		NAPI_CALL(env, napi_throw_error(env,"-1","time out"));
-		break;
-	case -2:
-		NAPI_CALL(env, napi_throw_error(env,"-2","socket/select error"));
-		break;
-	default:
-		break;
-  }
-
-  char* native_result = ptr->hd_response;
-  int native_result_len = ptr->hd_used;
-  //char url[64];
-  //const char* u = "http://www.66rpg.com/index.html";
-  //memcpy(url,u,strlen(u));
-  //http(url);
-
-
-  NAPI_CALL(env, napi_create_string_utf8(env, native_result, native_result_len, &result));
-  free(pre->hd_response_header);
-  free(ptr->hd_response);
-  free(ptr);
-  return result;
-}
-
-static napi_value Init(napi_env env, napi_value exports) {
-  napi_property_descriptor desc = DECLARE_NAPI_PROPERTY("http_get", HttpGET);
-  NAPI_CALL(env, napi_define_properties(env, exports, 1, &desc));
-  return exports;
-}
-
-NAPI_MODULE(NODE_GYP_MODULE_NAME, Init);
-
-*/
-/*
 int main(int argc,char** argv)
 {
 char url[1024];
-const char* u = "http://api_test.17k.com/demo1.php";
+const char* u = "http://c2.cgyouxi.com/website/orange/img/common/entry/logo.png";
 //const char* u = "http://www.66rpg.com";
 memcpy(url,u,strlen(u)+1);
   HTTPDATA* ptr = (HTTPDATA*)malloc(sizeof(HTTPDATA));
   ptr->hd_response = (char*)malloc(2048);
   ptr->hd_size = 2048;
   ptr->hd_used = 0;
-  ptr->hd_method = POST;
-  ptr->hd_request_body = (char*)malloc(2048);
+  ptr->hd_method = GET;
+//  ptr->hd_request_body = (char*)malloc(2048);
   ptr->hd_response_header = (char*)malloc(HEADERSIZE);
-  memset(ptr->hd_request_body,0,sizeof(char)*2048);
+  //memset(ptr->hd_request_body,0,sizeof(char)*2048);
   bzero(ptr->hd_response,ptr->hd_size);
 
-  memcpy(ptr->hd_request_body,&"a=111&b=sadasd",strlen("a=111&b=sadasd"));
+  //memcpy(ptr->hd_request_body,&"a=111&b=sadasd",strlen("a=111&b=sadasd"));
 
   int ret = http(ptr,url,0);
   int before = ptr->hd_used;
