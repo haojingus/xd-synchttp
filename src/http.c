@@ -147,7 +147,7 @@ void chunk_decode(HTTPDATA* source)
 	}
 
 	//处理正常http报文
-	if (!sz_chunk_flag)
+	if (!*sz_chunk_flag)
 	{
 		//非chunked协议，做定长检查
 		if(sz_content_length)

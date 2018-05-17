@@ -1,6 +1,6 @@
 {
   "name": "xd-synchttp",
-  "version": "0.2.1",
+  "version": "0.2.5",
   "description": "sync http request",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,10 @@
     "sync",
     "http"
   ],
-  "author": "Jing HAO",
+  "author":{
+  "name":"Jing HAO",
+  "email":"haojingus@163.com"
+  },
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/haojingus/xd-synchttp/issues"
