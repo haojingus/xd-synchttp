@@ -19,7 +19,7 @@ static napi_value http_get(napi_env env, napi_callback_info info) {
   NAPI_ASSERT(env, valuetype0 == napi_string ,"Wrong argument type. String expected.");
 
   char value0[1024];
-  int n_result;
+  size_t n_result;
   NAPI_CALL(env, napi_get_value_string_utf8(env, args[0], value0, 1024,&n_result));
 
   int value1;
@@ -93,7 +93,7 @@ static napi_value http_post(napi_env env, napi_callback_info info) {
   NAPI_ASSERT(env, valuetype2 == napi_number ,"Wrong argument type. Number expected.");
 
   char value0[1024];
-  int n_result;
+  size_t n_result;
   NAPI_CALL(env, napi_get_value_string_utf8(env, args[0], value0, 1024,&n_result));
 
   int value2;
@@ -112,7 +112,6 @@ static napi_value http_post(napi_env env, napi_callback_info info) {
   char* ptr_post_cursor = ptr->hd_request_body;
   char *sz_swap_buff = (char*)malloc(sizeof(char)*2000000);
   memset(ptr->hd_request_body,0,2000000);
-  int buff_length = 0;
   for (i = 0; i < length; i++) {
     napi_value property_str;
     NAPI_CALL(env, napi_get_element(env, propertynames, i, &property_str));
@@ -127,7 +126,10 @@ static napi_value http_post(napi_env env, napi_callback_info info) {
 
 	//获取属性值
 	memset(sz_swap_buff,0,2000000);
-    NAPI_CALL(env, napi_get_value_string_utf8(env, property_value, sz_swap_buff, 2000000, &n_result));
+	napi_value new_property_value;
+	NAPI_CALL(env, napi_coerce_to_string(env, property_value, &new_property_value));
+	NAPI_CALL(env, napi_get_value_string_utf8(env, new_property_value, sz_swap_buff, 2000000, &n_result));
+		
 	strcat(sz_attr_name,"=");
 	strcat(sz_swap_buff,"&");
 

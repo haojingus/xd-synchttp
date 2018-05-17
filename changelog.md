@@ -1,5 +1,12 @@
 # Changelog
 
+## v.0.2.6 - 17 May, 2018
+
+Bugfixes
+
+- Fixed chunk point bug.
+- Fixed post data type bug.
+
 ## v.0.2.5 - 17 May, 2018
 
 Bugfixes

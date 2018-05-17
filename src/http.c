@@ -150,7 +150,7 @@ void chunk_decode(HTTPDATA* source)
 	if (!*sz_chunk_flag)
 	{
 		//非chunked协议，做定长检查
-		if(sz_content_length)
+		if(*sz_content_length)
 			body_length = atoi(sz_content_length);
 		else
 			body_length = source->hd_used - body_start_pos;
@@ -274,12 +274,12 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   int portnumber,nbytes;
   char host_addr[256];
   char host_file[1024];
-  char local_file[256];
-  FILE * fp;
+  //char local_file[256];
+  //FILE * fp;
   char request[1024];
   int send_length, total_send, total_recv;
-  int i;
-  char * pt;
+  //int i;
+  //char * pt;
 
   http_body->hd_timeout = timeout;
  //printf("parameter.1 is: %s\n", url);
@@ -384,7 +384,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   char sz_header[128];
   memset(sz_header,0,sizeof(char)*128);
   if (http_body->hd_method==POST)
-	sprintf(sz_header,"Content-Length: %d\r\nContent-Type: application/x-www-form-urlencoded\r\n",strlen(http_body->hd_request_body));
+	sprintf(sz_header,"Content-Length: %d\r\nContent-Type: application/x-www-form-urlencoded\r\n",(int)strlen(http_body->hd_request_body));
   sprintf(request, "%s /%s HTTP/1.1\r\nAccept: */*\r\nAccept-Language: zh-cn\r\nUser-Agent: xd-synchttp\r\nHost: %s:%d\r\n%sConnection: Close\r\n\r\n%s", sz_method,host_file, host_addr, portnumber,sz_header, http_body->hd_request_body);
   //printf("REQ:%s\n\nREQ Length:%d\n", request,strlen(request));/*准备request，将要发送给主机*/
 
@@ -416,11 +416,11 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   }
 
   //printf("\nThe following is the response header:\n");
-  i=0;
+  //i=0;
   /* 发送成功了，接收http响应，response */
 
   total_recv = 0;
-  int recv_enable = 1;
+  //int recv_enable = 1;
   int recv_finish = 0;
   
   gettimeofday(&t_start, NULL);
@@ -478,6 +478,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   //fclose(fp);
   /* 结束通讯 */
   close(sockfd);
+  return 0;
   //exit(0);
 }
 /*
