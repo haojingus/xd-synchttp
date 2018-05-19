@@ -2,29 +2,29 @@
 
 //#include <node_api.h>
 //#include "../common.h"
-void append_string(HTTPDATA* dest,char* source,int size)
+void append_dstring(DSTRING* dest,char* source,int size)
 {
-	int len = dest->hd_used;
+	int len = dest->t_used;
 	//int len = strlen(dest->hd_response);
-	if (len+size>dest->hd_size)
+	if (len+size>dest->t_size)
 	{
 		//不够用了重分配
-		int buff_size = dest->hd_size+2048+size;
+		int buff_size = dest->t_size+2048+size;
 		char* sz_buff = (char*)malloc(buff_size);
 		bzero(sz_buff,buff_size);
-		memcpy(sz_buff,dest->hd_response,len);
+		memcpy(sz_buff,dest->t_string,len);
 		memcpy(sz_buff+len,source,size);
-		free(dest->hd_response);
-		dest->hd_response = sz_buff;
-		dest->hd_size = buff_size;
+		free(dest->t_string);
+		dest->t_string = sz_buff;
+		dest->t_size = buff_size;
 		
 	}
 	else
 	{
 		//够用就直接拷贝
-		memcpy(dest->hd_response+len,source,size);
+		memcpy(dest->t_string+len,source,size);
 	}
-	dest->hd_used += size;
+	dest->t_used += size;
 
 	//printf("%s\n",dest->hd_response);
 	
@@ -96,22 +96,22 @@ int byteToInt(const unsigned char* source,int len)
 //chunk解码器
 void chunk_decode(HTTPDATA* source)
 {
-	char* ptr_http_header = strstr(source->hd_response,"\r\n\r\n");
+	char* ptr_http_header = strstr(source->hd_response->t_string,"\r\n\r\n");
 	if (ptr_http_header==NULL)
 	{
-		fprintf(stderr,"Error http header\nData:%s\n",source->hd_response);
+		fprintf(stderr,"Error http header\nData:%s\n",source->hd_response->t_string);
 		return;
 	}
 	char sz_http_status[4];
 	memset(sz_http_status,0,sizeof(char)*4);
-	memcpy(sz_http_status,source->hd_response+9,3);
+	memcpy(sz_http_status,source->hd_response->t_string+9,3);
 	source->hd_response_code = atoi(sz_http_status);
 	//printf("HTTP CODE:%d\n",source->hd_response_code);
-	int body_start_pos = ptr_http_header - source->hd_response+4;
+	int body_start_pos = ptr_http_header - source->hd_response->t_string+4;
 	//初始化header
 	bzero(source->hd_response_header,HEADERSIZE);
 	
-	memcpy(source->hd_response_header,source->hd_response,body_start_pos);
+	memcpy(source->hd_response_header,source->hd_response->t_string,body_start_pos);
 	//printf("HTTP HEADER:\n%s\n",source->hd_response_header);
 	//char *ptr_field_header = strstr(source->hd_response,"Transfer-Encoding: chunked");
 	int body_length = 0;
@@ -134,8 +134,8 @@ void chunk_decode(HTTPDATA* source)
 	{	
 		//跳转，计数+1
 		source->hd_redirect_count++;
-		source->hd_used = 0;
-		memset(source->hd_response,0,source->hd_size);
+		source->hd_response->t_used = 0;
+		memset(source->hd_response->t_string,0,source->hd_response->t_size);
 		if(!http(source,sz_location,source->hd_timeout))
 			chunk_decode(source);
 		return;
@@ -153,10 +153,10 @@ void chunk_decode(HTTPDATA* source)
 		if(*sz_content_length)
 			body_length = atoi(sz_content_length);
 		else
-			body_length = source->hd_used - body_start_pos;
-		memmove(source->hd_response,source->hd_response+body_start_pos,body_length);
-		source->hd_used = body_length;
-		bzero(source->hd_response+source->hd_used,source->hd_size-source->hd_used);
+			body_length = source->hd_response->t_used - body_start_pos;
+		memmove(source->hd_response->t_string,source->hd_response->t_string+body_start_pos,body_length);
+		source->hd_response->t_used = body_length;
+		bzero(source->hd_response->t_string+source->hd_response->t_used,source->hd_response->t_size-source->hd_response->t_used);
 		
 		return;
 	}
@@ -166,15 +166,19 @@ void chunk_decode(HTTPDATA* source)
 	//if (body_start_pos-chunk_pos<=0)
 	//	return;
 	//游标指向body开始
-	char *p_cursor = source->hd_response+body_start_pos;
+	char *p_cursor = source->hd_response->t_string+body_start_pos;
 
 //	fprintf(stderr,"http header:\n%s\n\n",debug);
 	int chunk_header_pos,chunk_size;
+	DSTRING* p_chunked_content = (DSTRING*)malloc(sizeof(DSTRING));
+	INIT_DSTRING(p_chunked_content,source->hd_response->t_size);
+	/*
 	HTTPDATA* p_chunked_content = (HTTPDATA*)malloc(sizeof(HTTPDATA));
 	p_chunked_content->hd_response = (char*)malloc(source->hd_size);
 	bzero(p_chunked_content->hd_response,source->hd_size);
 	p_chunked_content->hd_used = 0;
 	p_chunked_content->hd_size = source->hd_size;
+	*/
 	//p_chunked_content->hd_redirect_count = 0;
 
 	int chunk_count = 0;
@@ -193,17 +197,18 @@ void chunk_decode(HTTPDATA* source)
 
 		//bzero(sz_chunk_body,128000);
 		p_cursor += chunk_header_pos+2;
-		append_string(p_chunked_content,p_cursor,chunk_size);
+		append_dstring(p_chunked_content,p_cursor,chunk_size);
 		p_cursor += chunk_size;
 		chunk_count++;
 		//查找下个chunk头
 		p_cursor+=2;
 	}
-	memcpy(source->hd_response,p_chunked_content->hd_response,source->hd_size);
-	source->hd_used = p_chunked_content->hd_used;
+	memcpy(source->hd_response->t_string,p_chunked_content->t_string,source->hd_response->t_size);
+	source->hd_response->t_used = p_chunked_content->t_used;
 	free(sz_chunk_header);
-	free(p_chunked_content->hd_response);
-	free(p_chunked_content);
+	FREE_DSTRING(p_chunked_content);
+//	free(p_chunked_content->hd_response);
+//	free(p_chunked_content);
 	//printf("\n\n===============\nChunk count:%d================\n",chunk_count);
 		
 	//charchunk = strstr(ptr->hd_response,"chunked");
@@ -239,8 +244,8 @@ void ToLowerCase(char * s)  {
 void get_host(char * src, char * web, char * file, int * port)  {
   char * pA;
   char * pB;
-  memset(web, 0, sizeof(web));
-  memset(file, 0, sizeof(file));
+  //memset(web, 0, sizeof(web));
+  //memset(file, 0, sizeof(file));
   *port = 0;
   if(!(*src))  return;
   pA = src;
@@ -312,9 +317,6 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   server_addr.sin_port=htons(portnumber);
   server_addr.sin_addr=*((struct in_addr *)host->h_addr);
 
-
-
-
   //修改为异步+select模式
   int flags = fcntl(sockfd, F_GETFL, 0);
   if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) < 0)
@@ -384,8 +386,8 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   char sz_header[128];
   memset(sz_header,0,sizeof(char)*128);
   if (http_body->hd_method==POST)
-	sprintf(sz_header,"Content-Length: %d\r\nContent-Type: application/x-www-form-urlencoded\r\n",(int)strlen(http_body->hd_request_body));
-  sprintf(request, "%s /%s HTTP/1.1\r\nAccept: */*\r\nAccept-Language: zh-cn\r\nUser-Agent: xd-synchttp\r\nHost: %s:%d\r\n%sConnection: Close\r\n\r\n%s", sz_method,host_file, host_addr, portnumber,sz_header, http_body->hd_request_body);
+	sprintf(sz_header,"Content-Length: %d\r\nContent-Type: application/x-www-form-urlencoded\r\n",(int)strlen(http_body->hd_request_body->t_string));
+  sprintf(request, "%s /%s HTTP/1.1\r\nAccept: */*\r\nAccept-Language: zh-cn\r\nUser-Agent: xd-synchttp\r\nHost: %s:%d\r\n%sConnection: Close\r\n\r\n%s", sz_method,host_file, host_addr, portnumber,sz_header, http_body->hd_request_body->t_string);
   //printf("REQ:%s\n\nREQ Length:%d\n", request,strlen(request));/*准备request，将要发送给主机*/
 
   /*发送http请求request*/
@@ -444,7 +446,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 					nbytes =  recv(sockfd, buffer, 1024, 0);
 					if (nbytes>0)
 						{
-							append_string(http_body,buffer,nbytes);
+							append_dstring(http_body->hd_response,buffer,nbytes);
 							//printf("RECV<<<%s\nRECV SIZE:%d\nBUFF SIZE:%d\nRECV END<<<\n\n",buffer,nbytes,strlen(buffer));
 							total_recv+=nbytes;
 						}
@@ -488,27 +490,21 @@ char url[1024];
 const char* u = "http://c2.cgyouxi.com/website/orange/img/common/entry/logo.png";
 //const char* u = "http://www.66rpg.com";
 memcpy(url,u,strlen(u)+1);
-  HTTPDATA* ptr = (HTTPDATA*)malloc(sizeof(HTTPDATA));
-  ptr->hd_response = (char*)malloc(2048);
-  ptr->hd_size = 2048;
-  ptr->hd_used = 0;
-  ptr->hd_method = GET;
-//  ptr->hd_request_body = (char*)malloc(2048);
-  ptr->hd_response_header = (char*)malloc(HEADERSIZE);
-  //memset(ptr->hd_request_body,0,sizeof(char)*2048);
-  bzero(ptr->hd_response,ptr->hd_size);
-
+HTTPDATA* ptr = (HTTPDATA*)malloc(sizeof(HTTPDATA));
+INIT_HTTPDATA(ptr);
   //memcpy(ptr->hd_request_body,&"a=111&b=sadasd",strlen("a=111&b=sadasd"));
 
   int ret = http(ptr,url,0);
-  int before = ptr->hd_used;
+  int before = ptr->hd_response->t_used;
   //printf("RECV<<<\n%s\n",ptr->hd_response);
   chunk_decode(ptr);
-  printf("HTTP BODY>>>\n%s\n===============\n",ptr->hd_response);
+  printf("HTTP BODY>>>\n%s\n===============\n",ptr->hd_response->t_string);
   printf("before chunked length:%d\n\n",before);
  
-  printf("after chunked length:%d\n\n",ptr->hd_used);
+  printf("after chunked length:%d\n\n",ptr->hd_response->t_used);
+  FREE_HTTPDATA(ptr);
  
 }
+
 
 */

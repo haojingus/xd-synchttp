@@ -76,6 +76,7 @@ INCS_Release := \
 	-I/home/haojing/.node-gyp/10.0.0/deps/v8/include
 
 OBJS := \
+	$(obj).target/$(TARGET)/http.o \
 	$(obj).target/$(TARGET)/binding.o
 
 # Add to the list of files we specially track dependencies for.

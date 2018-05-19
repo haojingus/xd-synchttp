@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "binding",
-      "sources": [ "binding.c" ]
+      "sources": [ "http.c","binding.c" ]
     }
   ]
 }

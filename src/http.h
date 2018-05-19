@@ -1,3 +1,6 @@
+#ifndef __HTTP_H_
+#define __HTTP_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,27 +25,63 @@
 #define MAXREDIRECT 3
 
 typedef enum 
-
 {
 	GET=1,POST,PATCH,PUT,DELETE
 } HTTP_METHOD;
 
+typedef struct
+{
+	char* t_string;
+	int t_size;
+	int t_used;
+} DSTRING;
+
 typedef struct 
 {
-	char* hd_response;//很大 heap
+	DSTRING* hd_response;//很大 heap
 	int hd_size;
 	int hd_used;
 	int hd_redirect_count;
 	HTTP_METHOD hd_method;
 	char* hd_response_header;//一般大 heap
 	int hd_response_code;
-	char* hd_request_body;//很大 heap
+	DSTRING* hd_request_body;//很大 heap
 	char hd_request_url[1024];//不太大 stack
 	int hd_timeout;
 
 } HTTPDATA;
 
-void append_string(HTTPDATA* dest,char* source,int size);
+
+#define INIT_DSTRING(string,size) \
+	string->t_string = (char*)malloc(sizeof(char)*size);\
+	memset(string->t_string,0,sizeof(char)*size);\
+	string->t_size = size;\
+	string->t_used = 0;
+
+#define FREE_DSTRING(string) \
+	free(string->t_string);\
+	free(string);
+
+#define INIT_HTTPDATA(data) \
+	data->hd_response = (DSTRING*)malloc(sizeof(DSTRING));\
+	INIT_DSTRING(data->hd_response,2048);\
+	data->hd_redirect_count = 0;\
+	data->hd_method = GET;\
+	data->hd_response_header = (char*)malloc(HEADERSIZE);\
+	data->hd_request_body = (DSTRING*)malloc(sizeof(DSTRING));\
+	INIT_DSTRING(data->hd_request_body ,2048);\
+	memset(data->hd_response_header,0,sizeof(char)*HEADERSIZE);
+
+#define FREE_HTTPDATA(data) \
+	FREE_DSTRING(data->hd_response);\
+	FREE_DSTRING(data->hd_request_body);\
+	free(data->hd_response_header);\
+	free(data);
+
+void append_dstring(DSTRING* dest,char* source,int size);
+
+//void dstring_append(DSTRING* dest,char* source,int size);
+
 int get_header_value(HTTPDATA* data, const char* field,char* value);
 
 
@@ -67,4 +106,6 @@ void ToLowerCase(char * s);
 ***************************************************************/
 void get_host(char * src, char * web, char * file, int * port);
 int http(HTTPDATA* http_body,char* url,int timeout);
+
+#endif
 
