@@ -18,11 +18,18 @@
 #include <assert.h>
 #include <fcntl.h>
 
-
+//#define DEBUG 1
 
 #define HEADERSIZE 4096
 #define SENDBUFFSZIE 1024
 #define MAXREDIRECT 3
+#define MIMESIZE 96
+#define URLSIZE 1024
+
+typedef enum
+{
+	FORMAT_UNKNOWN=0,FORMAT_PNG,FORMAT_JPEG,FORMAT_GIF
+} IMAGE_FORMAT; 
 
 typedef enum 
 {
@@ -46,8 +53,9 @@ typedef struct
 	char* hd_response_header;//一般大 heap
 	int hd_response_code;
 	DSTRING* hd_request_body;//很大 heap
-	char hd_request_url[1024];//不太大 stack
+	char hd_request_url[URLSIZE];//不太大 stack
 	int hd_timeout;
+	char hd_content_type[MIMESIZE];
 
 } HTTPDATA;
 
@@ -70,7 +78,8 @@ typedef struct
 	data->hd_response_header = (char*)malloc(HEADERSIZE);\
 	data->hd_request_body = (DSTRING*)malloc(sizeof(DSTRING));\
 	INIT_DSTRING(data->hd_request_body ,2048);\
-	memset(data->hd_response_header,0,sizeof(char)*HEADERSIZE);
+	memset(data->hd_response_header,0,sizeof(char)*HEADERSIZE);\
+	memset(data->hd_content_type,0,sizeof(char)*MIMESIZE);
 
 #define FREE_HTTPDATA(data) \
 	FREE_DSTRING(data->hd_response);\
@@ -78,6 +87,11 @@ typedef struct
 	free(data->hd_response_header);\
 	free(data);
 
+#ifdef DEBUG
+	#define _DEBUG(msg) fprintf(stderr,"%s\n",msg);
+#else
+	#define _DEBUG(msg);
+#endif
 void append_dstring(DSTRING* dest,char* source,int size);
 
 //void dstring_append(DSTRING* dest,char* source,int size);
@@ -107,5 +121,6 @@ void ToLowerCase(char * s);
 void get_host(char * src, char * web, char * file, int * port);
 int http(HTTPDATA* http_body,char* url,int timeout);
 
+IMAGE_FORMAT get_image_type(const char* mime);
 #endif
 

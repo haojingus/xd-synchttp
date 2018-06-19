@@ -1,4 +1,10 @@
 # Changelog
+## v.0.3.0 - 19 Jun, 2018
+
+Bugfixes
+
+- Fixed chunked flag error.
+- Add get\_image\_size function.
 
 ## v.0.2.6 - 17 May, 2018
 

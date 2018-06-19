@@ -306,6 +306,26 @@ ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
                  $(join ^,binding.target.mk)))),)
   include binding.target.mk
 endif
+ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
+    $(findstring $(join ^,$(prefix)),\
+                 $(join ^,libhttp.target.mk)))),)
+  include libhttp.target.mk
+endif
+ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
+    $(findstring $(join ^,$(prefix)),\
+                 $(join ^,libjpeg.target.mk)))),)
+  include libjpeg.target.mk
+endif
+ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
+    $(findstring $(join ^,$(prefix)),\
+                 $(join ^,libpng.target.mk)))),)
+  include libpng.target.mk
+endif
+ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
+    $(findstring $(join ^,$(prefix)),\
+                 $(join ^,zlib.target.mk)))),)
+  include zlib.target.mk
+endif
 
 quiet_cmd_regen_makefile = ACTION Regenerating $@
 cmd_regen_makefile = cd $(srcdir); /usr/local/node-v10.0.0-linux-x64/lib/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "--toplevel-dir=." -I/home/haojing/node-master/test/addons-napi/xd-synchttp/src/build/config.gypi -I/usr/local/node-v10.0.0-linux-x64/lib/node_modules/node-gyp/addon.gypi -I/home/haojing/.node-gyp/10.0.0/include/node/common.gypi "--depth=." "-Goutput_dir=." "--generator-output=build" "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/home/haojing/.node-gyp/10.0.0" "-Dnode_gyp_dir=/usr/local/node-v10.0.0-linux-x64/lib/node_modules/node-gyp" "-Dnode_lib_file=/home/haojing/.node-gyp/10.0.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/home/haojing/node-master/test/addons-napi/xd-synchttp/src" "-Dnode_engine=v8" binding.gyp

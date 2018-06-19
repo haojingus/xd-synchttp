@@ -96,6 +96,7 @@ int byteToInt(const unsigned char* source,int len)
 //chunk解码器
 void chunk_decode(HTTPDATA* source)
 {
+	_DEBUG("start chunked decode!");
 	char* ptr_http_header = strstr(source->hd_response->t_string,"\r\n\r\n");
 	if (ptr_http_header==NULL)
 	{
@@ -126,7 +127,9 @@ void chunk_decode(HTTPDATA* source)
 	get_header_value(source,"Transfer-Encoding",sz_chunk_flag);
 	get_header_value(source,"Content-Length",sz_content_length);
 	get_header_value(source,"Location",sz_location);
-
+	//获取MIME类型
+	get_header_value(source,"Content-Type",source->hd_content_type);
+	//fprintf(stderr,"MIME:%s\n",source->hd_content_type);
 	//printf("Location %s\n",sz_location);
 	
 	//处理重定向
@@ -147,8 +150,9 @@ void chunk_decode(HTTPDATA* source)
 	}
 
 	//处理正常http报文
-	if (!*sz_chunk_flag)
+	if (strcmp(sz_chunk_flag,"chunked")!=0||strlen(sz_content_length)>0)
 	{
+		_DEBUG("this is a fixed length code!\n");
 		//非chunked协议，做定长检查
 		if(*sz_content_length)
 			body_length = atoi(sz_content_length);
@@ -160,7 +164,7 @@ void chunk_decode(HTTPDATA* source)
 		
 		return;
 	}
-
+	_DEBUG("this is a chunked code!\n");
 	char *sz_chunk_header = (char*)malloc(4096);
 	//int chunk_pos = ptr_field_header - source->hd_response;
 	//if (body_start_pos-chunk_pos<=0)
@@ -186,9 +190,17 @@ void chunk_decode(HTTPDATA* source)
 	{
 	//printf("chunk index %d\n",chunk_count);	
 		chunk_header_pos = strstr(p_cursor,"\r\n")-p_cursor;
+		//printf("\n=========\nPOS:%d\n=========\n",chunk_header_pos);
+		//printf("\nChunked flag:%s\nLength:%s\n\n",sz_chunk_flag,sz_content_length);
 		bzero(sz_chunk_header,4096);
-		if(chunk_header_pos>4096)
-			fprintf(stderr,"ERROR memcpy header pos is %d\n",chunk_header_pos);
+		if(chunk_header_pos>4096||chunk_header_pos<=0)
+		{	fprintf(stderr,"ERROR memcpy header pos is %d\n",chunk_header_pos);
+			fprintf(stderr,"HEADER:%s\n=========\n",source->hd_response_header);
+			free(sz_chunk_header);
+			FREE_DSTRING(p_chunked_content);
+			_DEBUG("http chunked decode error!\n");
+			return;
+		}
 		memcpy(sz_chunk_header,p_cursor,chunk_header_pos);
 		//strncpy(sz_chunk_header,p_cursor,chunk_header_pos);
 		chunk_size = (int)strtol(sz_chunk_header,NULL,16);
@@ -207,6 +219,7 @@ void chunk_decode(HTTPDATA* source)
 	source->hd_response->t_used = p_chunked_content->t_used;
 	free(sz_chunk_header);
 	FREE_DSTRING(p_chunked_content);
+	_DEBUG("chunked decode finished!\n");
 //	free(p_chunked_content->hd_response);
 //	free(p_chunked_content);
 	//printf("\n\n===============\nChunk count:%d================\n",chunk_count);
@@ -272,6 +285,7 @@ void get_host(char * src, char * web, char * file, int * port)  {
 
 int http(HTTPDATA* http_body,char* url,int timeout)
 {
+	_DEBUG("start http request");
   int sockfd;
   char buffer[1024];
   struct sockaddr_in server_addr;
@@ -480,8 +494,20 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   //fclose(fp);
   /* 结束通讯 */
   close(sockfd);
+  _DEBUG("http request finished!\n");
   return 0;
   //exit(0);
+}
+
+IMAGE_FORMAT get_image_type(const char* mime)
+{
+	if (strcmp(mime,"image/png")==0)
+		return FORMAT_PNG;
+	if (strcmp(mime,"image/jpeg")==0)
+		return FORMAT_JPEG;
+	if (strcmp(mime,"image/gif")==0)
+		return FORMAT_GIF;
+	return FORMAT_UNKNOWN;
 }
 /*
 int main(int argc,char** argv)

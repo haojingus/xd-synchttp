@@ -38,7 +38,9 @@ INCS_Debug := \
 	-I/home/haojing/.node-gyp/10.0.0/include/node \
 	-I/home/haojing/.node-gyp/10.0.0/src \
 	-I/home/haojing/.node-gyp/10.0.0/deps/uv/include \
-	-I/home/haojing/.node-gyp/10.0.0/deps/v8/include
+	-I/home/haojing/.node-gyp/10.0.0/deps/v8/include \
+	-I$(srcdir)/third-party/libpng \
+	-I$(srcdir)/third-party/jpeg
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=binding' \
@@ -73,14 +75,22 @@ INCS_Release := \
 	-I/home/haojing/.node-gyp/10.0.0/include/node \
 	-I/home/haojing/.node-gyp/10.0.0/src \
 	-I/home/haojing/.node-gyp/10.0.0/deps/uv/include \
-	-I/home/haojing/.node-gyp/10.0.0/deps/v8/include
+	-I/home/haojing/.node-gyp/10.0.0/deps/v8/include \
+	-I$(srcdir)/third-party/libpng \
+	-I$(srcdir)/third-party/jpeg
 
 OBJS := \
-	$(obj).target/$(TARGET)/http.o \
+	$(obj).target/$(TARGET)/png.o \
+	$(obj).target/$(TARGET)/jpeg.o \
+	$(obj).target/$(TARGET)/gif.o \
+	$(obj).target/$(TARGET)/imagesize.o \
 	$(obj).target/$(TARGET)/binding.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)
+
+# Make sure our dependencies are built before any of us.
+$(OBJS): | $(builddir)/http.a $(builddir)/png.a $(builddir)/jpeg.a $(builddir)/zlib.a $(obj).target/http.a $(obj).target/png.a $(obj).target/jpeg.a $(obj).target/zlib.a
 
 # CFLAGS et al overrides must be target-local.
 # See "Target-specific Variable Values" in the GNU Make manual.
@@ -118,7 +128,7 @@ LIBS :=
 $(obj).target/binding.node: GYP_LDFLAGS := $(LDFLAGS_$(BUILDTYPE))
 $(obj).target/binding.node: LIBS := $(LIBS)
 $(obj).target/binding.node: TOOLSET := $(TOOLSET)
-$(obj).target/binding.node: $(OBJS) FORCE_DO_CMD
+$(obj).target/binding.node: $(OBJS) $(obj).target/http.a $(obj).target/png.a $(obj).target/jpeg.a $(obj).target/zlib.a FORCE_DO_CMD
 	$(call do_cmd,solink_module)
 
 all_deps += $(obj).target/binding.node

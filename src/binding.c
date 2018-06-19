@@ -1,7 +1,42 @@
 #include "http.h"
-
 #include <node_api.h>
 #include "common.h"
+#include "imagesize.h"
+
+static napi_value image_size(napi_env env, napi_callback_info info) {
+  size_t argc = 1;
+  napi_value args[1];
+  NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, NULL, NULL));
+
+  NAPI_ASSERT(env, argc >= 1, "Wrong number of arguments");
+
+  napi_valuetype valuetype0;
+  NAPI_CALL(env, napi_typeof(env, args[0], &valuetype0));
+
+  NAPI_ASSERT(env, valuetype0 == napi_string ,"Wrong argument type. String expected.");
+
+  char value0[1024];
+  size_t n_result;
+  NAPI_CALL(env, napi_get_value_string_utf8(env, args[0], value0, 1024,&n_result));
+  IMAGE_SIZE t_size = {0,0};
+  get_image_size(value0,&t_size);
+		//printf("JPEG W:%d H:%d\n",t_size.width,t_size.height);
+	//sleep(5);
+  //初始化返回值
+  napi_value ret;
+  NAPI_CALL(env, napi_create_object(env, &ret));
+
+  napi_value width;
+  NAPI_CALL(env, napi_create_int32(env, t_size.width, &width));
+  NAPI_CALL(env, napi_set_named_property(env, ret, "width",width));
+
+  napi_value height;
+  NAPI_CALL(env, napi_create_int32(env, t_size.height, &height));
+  NAPI_CALL(env, napi_set_named_property(env, ret, "height",height));
+//load_png_image(value0);
+	return ret;
+}
+
 
 static napi_value http_get(napi_env env, napi_callback_info info) {
   size_t argc = 2;
@@ -157,6 +192,7 @@ static napi_value Init(napi_env env, napi_value exports) {
   napi_property_descriptor descriptors[] = {
     DECLARE_NAPI_PROPERTY("http_get", http_get),
     DECLARE_NAPI_PROPERTY("http_post", http_post),
+	DECLARE_NAPI_PROPERTY("get_image_size", image_size),
    };
 
   NAPI_CALL(env, napi_define_properties(
@@ -168,3 +204,4 @@ static napi_value Init(napi_env env, napi_value exports) {
 NAPI_MODULE(NODE_GYP_MODULE_NAME, Init);
 
  
+  
