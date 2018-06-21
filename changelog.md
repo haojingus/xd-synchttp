@@ -1,4 +1,10 @@
 # Changelog
+## v.0.3.2 - 21 Jun, 2018
+
+Bugfixes
+
+- Fixed buffer overflow from gif.c
+
 ## v.0.3.0 - 19 Jun, 2018
 
 Bugfixes

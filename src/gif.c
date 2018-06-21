@@ -84,7 +84,7 @@ int load_gif_image(const char* uri,HTTPDATA* ptr_http_data,IMAGE_SIZE* size)
 			return -2;
 		}
 		
-		char info_buf[3] = {'\0','\0','\0'};
+		char info_buf[4] = {'\0','\0','\0','\0'};
 		char *sz_stop;
 		memcpy(info_buf,buf+6,4);
 		w = (info_buf[0]&0xff)|((info_buf[1]<<8)&0xff00);
