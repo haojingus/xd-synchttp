@@ -396,10 +396,34 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 	return -2;
   }
 
-  const char* sz_method = (http_body->hd_method==GET)?"GET":"POST";
+  char sz_method[10];
+  memset(sz_method,0,10);
+  switch(http_body->hd_method)
+  {
+	case GET:
+		strcpy(sz_method,"GET");
+		break;
+	case POST:
+		strcpy(sz_method,"POST");
+		break;
+	case PATCH:
+		strcpy(sz_method,"PATCH");
+		break;
+	case PUT:
+		strcpy(sz_method,"PUT");
+		break;
+	case DELETE:
+		strcpy(sz_method,"DELETE");
+		break;
+	default:
+		strcpy(sz_method,"GET");
+		break;
+  }
+
+  (http_body->hd_method==GET)?"GET":"POST";
   char sz_header[128];
   memset(sz_header,0,sizeof(char)*128);
-  if (http_body->hd_method==POST)
+  if (http_body->hd_method==POST||http_body->hd_method==PUT||http_body->hd_method==PATCH)
 	sprintf(sz_header,"Content-Length: %d\r\nContent-Type: application/x-www-form-urlencoded\r\n",(int)strlen(http_body->hd_request_body->t_string));
   sprintf(request, "%s /%s HTTP/1.1\r\nAccept: */*\r\nAccept-Language: zh-cn\r\nUser-Agent: xd-synchttp\r\nHost: %s:%d\r\n%sConnection: Close\r\n\r\n%s", sz_method,host_file, host_addr, portnumber,sz_header, http_body->hd_request_body->t_string);
   //printf("REQ:%s\n\nREQ Length:%d\n", request,strlen(request));/*准备request，将要发送给主机*/
@@ -513,16 +537,19 @@ IMAGE_FORMAT get_image_type(const char* mime)
 int main(int argc,char** argv)
 {
 char url[1024];
-const char* u = "http://c2.cgyouxi.com/website/orange/img/common/entry/logo.png";
-//const char* u = "http://www.66rpg.com";
+//const char* u = "http://c2.cgyouxi.com/website/orange/img/common/entry/logo.png";
+const char* u = "http://cms.gamebuilder.com.cn/api/restful/1/2/3";
 memcpy(url,u,strlen(u)+1);
 HTTPDATA* ptr = (HTTPDATA*)malloc(sizeof(HTTPDATA));
 INIT_HTTPDATA(ptr);
+ptr->hd_method = PATCH;
+append_dstring(ptr->hd_request_body,"a=111&b=222",strlen("a=111&b=222"));
+
   //memcpy(ptr->hd_request_body,&"a=111&b=sadasd",strlen("a=111&b=sadasd"));
 
   int ret = http(ptr,url,0);
   int before = ptr->hd_response->t_used;
-  //printf("RECV<<<\n%s\n",ptr->hd_response);
+  printf("RECV<<<\n%s\n",ptr->hd_response);
   chunk_decode(ptr);
   printf("HTTP BODY>>>\n%s\n===============\n",ptr->hd_response->t_string);
   printf("before chunked length:%d\n\n",before);
