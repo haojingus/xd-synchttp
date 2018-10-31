@@ -1,4 +1,9 @@
 # Changelog
+## v.0.3.5 - 31 Oct, 2018
+Bugfixes
+
+- Fixed sprintf segmentation fault
+
 ## v.0.3.2 - 21 Jun, 2018
 
 Bugfixes

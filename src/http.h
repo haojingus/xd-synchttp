@@ -120,7 +120,7 @@ void ToLowerCase(char * s);
 ***************************************************************/
 void get_host(char * src, char * web, char * file, int * port);
 int http(HTTPDATA* http_body,char* url,int timeout);
-
+void dump_httpdata(HTTPDATA* ptr);
 IMAGE_FORMAT get_image_type(const char* mime);
 #endif
 

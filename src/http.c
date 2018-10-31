@@ -295,7 +295,6 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   char host_file[1024];
   //char local_file[256];
   //FILE * fp;
-  char request[1024];
   int send_length, total_send, total_recv;
   //int i;
   //char * pt;
@@ -423,6 +422,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   (http_body->hd_method==GET)?"GET":"POST";
   char sz_header[128];
   memset(sz_header,0,sizeof(char)*128);
+  char *request = (char*)malloc(sizeof(char)*strlen(http_body->hd_request_body->t_string)+1024);
   if (http_body->hd_method==POST||http_body->hd_method==PUT||http_body->hd_method==PATCH)
 	sprintf(sz_header,"Content-Length: %d\r\nContent-Type: application/x-www-form-urlencoded\r\n",(int)strlen(http_body->hd_request_body->t_string));
   sprintf(request, "%s /%s HTTP/1.1\r\nAccept: */*\r\nAccept-Language: zh-cn\r\nUser-Agent: xd-synchttp\r\nHost: %s:%d\r\n%sConnection: Close\r\n\r\n%s", sz_method,host_file, host_addr, portnumber,sz_header, http_body->hd_request_body->t_string);
@@ -521,6 +521,13 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   _DEBUG("http request finished!\n");
   return 0;
   //exit(0);
+}
+
+void dump_httpdata(HTTPDATA* ptr)
+{
+	fprintf(stderr,"Request data:\n==============\n%s\n==============\n\n",ptr->hd_request_body->t_string);
+	fprintf(stderr,"Request method:%d\n",ptr->hd_method);
+	fprintf(stderr,"Response data:\n==============\n%s\n==============\n\n",ptr->hd_response->t_string);
 }
 
 IMAGE_FORMAT get_image_type(const char* mime)
