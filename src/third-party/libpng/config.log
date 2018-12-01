@@ -127,9 +127,9 @@ configure:3766: result: yes
 configure:3794: checking for style of include used by make
 configure:3822: result: GNU
 configure:3848: checking dependency style of gcc
-configure:3959: result: gcc3
+configure:3959: result: none
 configure:3983: checking dependency style of gcc
-configure:4092: result: gcc3
+configure:4092: result: none
 configure:4111: checking build system type
 configure:4125: result: x86_64-unknown-linux-gnu
 configure:4145: checking host system type
@@ -463,8 +463,8 @@ configure:13018: gcc -o conftest -g -O2   conftest.c  >&5
 conftest.c:49:6: warning: conflicting types for built-in function 'pow'
  char pow ();
       ^~~
-/tmp/ccXycjWM.o: In function `main':
-/home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/conftest.c:60: undefined reference to `pow'
+/tmp/cco62VBa.o: In function `main':
+/home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/conftest.c:60: undefined reference to `pow'
 collect2: error: ld returned 1 exit status
 configure:13018: $? = 1
 configure: failed program was:
@@ -582,7 +582,6 @@ config.status:1127: creating Makefile
 config.status:1127: creating libpng.pc
 config.status:1127: creating libpng-config
 config.status:1127: creating config.h
-config.status:1308: config.h is unchanged
 config.status:1356: executing depfiles commands
 config.status:1356: executing libtool commands
 
@@ -660,8 +659,8 @@ ac_cv_prog_cc_g=yes
 ac_cv_prog_make_make_set=yes
 ac_cv_struct_tm=time.h
 ac_cv_type_size_t=yes
-am_cv_CCAS_dependencies_compiler_type=gcc3
-am_cv_CC_dependencies_compiler_type=gcc3
+am_cv_CCAS_dependencies_compiler_type=none
+am_cv_CC_dependencies_compiler_type=none
 am_cv_make_support_nested_variables=yes
 am_cv_prog_cc_c_o=yes
 lt_cv_ar_at_file=@
@@ -697,7 +696,7 @@ lt_cv_truncate_bin='/bin/dd bs=4096 count=1'
 ## Output variables. ##
 ## ----------------- ##
 
-ACLOCAL='${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing aclocal-1.15'
+ACLOCAL='${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing aclocal-1.15'
 AMDEPBACKSLASH='\'
 AMDEP_FALSE='#'
 AMDEP_TRUE=''
@@ -708,15 +707,15 @@ AM_DEFAULT_VERBOSITY='1'
 AM_V='$(V)'
 AR='ar'
 AS='as'
-AUTOCONF='${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing autoconf'
-AUTOHEADER='${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing autoheader'
-AUTOMAKE='${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing automake-1.15'
+AUTOCONF='${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing autoconf'
+AUTOHEADER='${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing autoheader'
+AUTOMAKE='${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing automake-1.15'
 AWK='mawk'
 CC='gcc'
 CCAS='gcc'
-CCASDEPMODE='depmode=gcc3'
+CCASDEPMODE='depmode=none'
 CCASFLAGS='-g -O2'
-CCDEPMODE='depmode=gcc3'
+CCDEPMODE='depmode=none'
 CFLAGS='-g -O2'
 CPP='gcc -E'
 CPPFLAGS=''
@@ -762,7 +761,7 @@ LT_SYS_LIBRARY_PATH=''
 MAINT='#'
 MAINTAINER_MODE_FALSE=''
 MAINTAINER_MODE_TRUE='#'
-MAKEINFO='${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing makeinfo'
+MAKEINFO='${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing makeinfo'
 MANIFEST_TOOL=':'
 MKDIR_P='/bin/mkdir -p'
 NM='/usr/bin/nm -B'
@@ -800,10 +799,10 @@ ac_ct_CC='gcc'
 ac_ct_DUMPBIN=''
 am__EXEEXT_FALSE=''
 am__EXEEXT_TRUE='#'
-am__fastdepCCAS_FALSE='#'
-am__fastdepCCAS_TRUE=''
-am__fastdepCC_FALSE='#'
-am__fastdepCC_TRUE=''
+am__fastdepCCAS_FALSE=''
+am__fastdepCCAS_TRUE='#'
+am__fastdepCC_FALSE=''
+am__fastdepCC_TRUE='#'
 am__include='include'
 am__isrc=''
 am__leading_dot='.'
@@ -831,7 +830,7 @@ host_vendor='unknown'
 htmldir='${docdir}'
 includedir='${prefix}/include'
 infodir='${datarootdir}/info'
-install_sh='${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/install-sh'
+install_sh='${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/install-sh'
 libdir='${exec_prefix}/lib'
 libexecdir='${exec_prefix}/libexec'
 localedir='${datarootdir}/locale'

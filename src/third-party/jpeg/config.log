@@ -49,6 +49,7 @@ configure:2397: checking for a BSD-compatible install
 configure:2465: result: /usr/bin/install -c
 configure:2476: checking whether build environment is sane
 configure:2531: result: yes
+configure:2569: WARNING: 'missing' script is too old or missing
 configure:2682: checking for a thread-safe mkdir -p
 configure:2721: result: /bin/mkdir -p
 configure:2728: checking for gawk
@@ -135,7 +136,7 @@ configure:3863: result: yes
 configure:3891: checking for style of include used by make
 configure:3919: result: GNU
 configure:3945: checking dependency style of gcc
-configure:4056: result: gcc3
+configure:4056: result: none
 configure:4075: checking for gcc option to accept ISO C99
 configure:4224: gcc  -c -g -O2  conftest.c >&5
 configure:4224: $? = 0
@@ -653,7 +654,7 @@ ac_cv_prog_cc_g=yes
 ac_cv_prog_cc_stdc=
 ac_cv_prog_make_make_set=yes
 ac_cv_target=x86_64-pc-linux-gnu
-am_cv_CC_dependencies_compiler_type=gcc3
+am_cv_CC_dependencies_compiler_type=none
 am_cv_ar_interface=ar
 am_cv_make_support_nested_variables=yes
 am_cv_prog_cc_c_o=yes
@@ -692,7 +693,7 @@ lt_cv_truncate_bin='/bin/dd bs=4096 count=1'
 ## Output variables. ##
 ## ----------------- ##
 
-ACLOCAL='${SHELL} /home/haojing/jpeg-9c/missing aclocal-1.15'
+ACLOCAL='aclocal-1.15'
 AMDEPBACKSLASH='\'
 AMDEP_FALSE='#'
 AMDEP_TRUE=''
@@ -703,12 +704,12 @@ AM_DEFAULT_VERBOSITY='0'
 AM_V='$(V)'
 AR='ar'
 AS='as'
-AUTOCONF='${SHELL} /home/haojing/jpeg-9c/missing autoconf'
+AUTOCONF='autoconf'
 AUTOHEADER='echo autoheader ignored'
-AUTOMAKE='${SHELL} /home/haojing/jpeg-9c/missing automake-1.15'
+AUTOMAKE='automake-1.15'
 AWK='mawk'
 CC='gcc'
-CCDEPMODE='depmode=gcc3'
+CCDEPMODE='depmode=none'
 CFLAGS='-g -O2'
 CPP='gcc -E'
 CPPFLAGS=''
@@ -744,7 +745,7 @@ LT_SYS_LIBRARY_PATH=''
 MAINT='#'
 MAINTAINER_MODE_FALSE=''
 MAINTAINER_MODE_TRUE='#'
-MAKEINFO='${SHELL} /home/haojing/jpeg-9c/missing makeinfo'
+MAKEINFO='makeinfo'
 MANIFEST_TOOL=':'
 MEMORYMGR='jmemnobs'
 MKDIR_P='/bin/mkdir -p'
@@ -773,8 +774,8 @@ ac_ct_CC='gcc'
 ac_ct_DUMPBIN=''
 am__EXEEXT_FALSE=''
 am__EXEEXT_TRUE='#'
-am__fastdepCC_FALSE='#'
-am__fastdepCC_TRUE=''
+am__fastdepCC_FALSE=''
+am__fastdepCC_TRUE='#'
 am__include='include'
 am__isrc=''
 am__leading_dot='.'
@@ -801,7 +802,7 @@ host_vendor='pc'
 htmldir='${docdir}'
 includedir='${prefix}/include'
 infodir='${datarootdir}/info'
-install_sh='${SHELL} /home/haojing/jpeg-9c/install-sh'
+install_sh='${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/jpeg/install-sh'
 libdir='${exec_prefix}/lib'
 libexecdir='${exec_prefix}/libexec'
 localedir='${datarootdir}/locale'

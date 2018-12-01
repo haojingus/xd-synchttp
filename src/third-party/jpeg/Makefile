@@ -23,7 +23,7 @@
 
 
 
-
+VPATH = .
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
     false; \
@@ -254,17 +254,17 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 AM_RECURSIVE_TARGETS = cscope
-ACLOCAL = ${SHELL} /home/haojing/jpeg-9c/missing aclocal-1.15
+ACLOCAL = aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 0
 AR = ar
 AS = as
-AUTOCONF = ${SHELL} /home/haojing/jpeg-9c/missing autoconf
+AUTOCONF = autoconf
 AUTOHEADER = echo autoheader ignored
-AUTOMAKE = ${SHELL} /home/haojing/jpeg-9c/missing automake-1.15
+AUTOMAKE = automake-1.15
 AWK = mawk
 CC = gcc
-CCDEPMODE = depmode=gcc3
+CCDEPMODE = depmode=none
 CFLAGS = -g -O2
 CPP = gcc -E
 CPPFLAGS = 
@@ -297,7 +297,7 @@ LN_S = ln -s
 LTLIBOBJS = 
 LT_SYS_LIBRARY_PATH = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/haojing/jpeg-9c/missing makeinfo
+MAKEINFO = makeinfo
 MANIFEST_TOOL = :
 MEMORYMGR = jmemnobs
 MKDIR_P = /bin/mkdir -p
@@ -321,10 +321,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 9.3.0
-abs_builddir = /home/haojing/jpeg-9c
-abs_srcdir = /home/haojing/jpeg-9c
-abs_top_builddir = /home/haojing/jpeg-9c
-abs_top_srcdir = /home/haojing/jpeg-9c
+abs_builddir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/jpeg
+abs_srcdir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/jpeg
+abs_top_builddir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/jpeg
+abs_top_srcdir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/jpeg
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
@@ -353,7 +353,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/haojing/jpeg-9c/install-sh
+install_sh = ${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/jpeg/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -723,25 +723,25 @@ include ./$(DEPDIR)/wrrle.Po
 include ./$(DEPDIR)/wrtarga.Po
 
 .c.o:
-	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	$(AM_V_CC)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
+#	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+	$(AM_V_CC)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	$(AM_V_CC)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+#	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+	$(AM_V_CC)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-#	$(AM_V_CC)source='$<' object='$@' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LTCOMPILE) -c -o $@ $<
+#	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+	$(AM_V_CC)source='$<' object='$@' libtool=yes \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(LTCOMPILE) -c -o $@ $<
 
 mostlyclean-libtool:
 	-rm -f *.lo

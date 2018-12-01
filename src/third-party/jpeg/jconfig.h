@@ -2,21 +2,21 @@
 /* jconfig.cfg --- source file edited by configure script */
 /* see jconfig.txt for explanations */
 
-#define HAVE_PROTOTYPES 1
-#define HAVE_UNSIGNED_CHAR 1
-#define HAVE_UNSIGNED_SHORT 1
-/* #undef void */
-/* #undef const */
-/* #undef CHAR_IS_UNSIGNED */
-#define HAVE_STDDEF_H 1
-#define HAVE_STDLIB_H 1
-#define HAVE_LOCALE_H 1
-/* #undef NEED_BSD_STRINGS */
-/* #undef NEED_SYS_TYPES_H */
-/* #undef NEED_FAR_POINTERS */
-/* #undef NEED_SHORT_EXTERNAL_NAMES */
+#undef HAVE_PROTOTYPES
+#undef HAVE_UNSIGNED_CHAR
+#undef HAVE_UNSIGNED_SHORT
+#undef void
+#undef const
+#undef CHAR_IS_UNSIGNED
+#undef HAVE_STDDEF_H
+#undef HAVE_STDLIB_H
+#undef HAVE_LOCALE_H
+#undef NEED_BSD_STRINGS
+#undef NEED_SYS_TYPES_H
+#undef NEED_FAR_POINTERS
+#undef NEED_SHORT_EXTERNAL_NAMES
 /* Define this if you get warnings about undefined structures. */
-/* #undef INCOMPLETE_TYPES_BROKEN */
+#undef INCOMPLETE_TYPES_BROKEN
 
 /* Define "boolean" as unsigned char, not enum, on Windows systems. */
 #ifdef _WIN32
@@ -34,17 +34,11 @@ typedef unsigned char boolean;
 
 #ifdef JPEG_INTERNALS
 
-/* #undef RIGHT_SHIFT_IS_UNSIGNED */
-
-
-#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __SYMBIAN32__ )
-#define INLINE __inline__
-#else
-#define inline __inline
-#endif
+#undef RIGHT_SHIFT_IS_UNSIGNED
+#undef INLINE
 /* These are for configuring the JPEG memory manager. */
-/* #undef DEFAULT_MAX_MEM */
-/* #undef NO_MKTEMP */
+#undef DEFAULT_MAX_MEM
+#undef NO_MKTEMP
 
 #endif /* JPEG_INTERNALS */
 
@@ -56,11 +50,11 @@ typedef unsigned char boolean;
 /* #undef RLE_SUPPORTED */
 #define TARGA_SUPPORTED		/* Targa image file format */
 
-/* #undef TWO_FILE_COMMANDLINE */
-/* #undef NEED_SIGNAL_CATCHER */
-/* #undef DONT_USE_B_MODE */
+#undef TWO_FILE_COMMANDLINE
+#undef NEED_SIGNAL_CATCHER
+#undef DONT_USE_B_MODE
 
 /* Define this if you want percent-done progress reports from cjpeg/djpeg. */
-/* #undef PROGRESS_REPORT */
+#undef PROGRESS_REPORT
 
 #endif /* JPEG_CJPEG_DJPEG */

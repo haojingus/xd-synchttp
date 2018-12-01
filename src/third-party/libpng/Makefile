@@ -22,7 +22,7 @@
 
 
 
-
+VPATH = .
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
     false; \
@@ -496,20 +496,20 @@ distcleancheck_listfiles = find . -type f -print
 
 #distribute headers in /usr/include/libpng/*
 pkgincludedir = $(includedir)/$(PNGLIB_BASENAME)
-ACLOCAL = ${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
 AS = as
-AUTOCONF = ${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing autoconf
-AUTOHEADER = ${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing autoheader
-AUTOMAKE = ${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing automake-1.15
+AUTOCONF = ${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing autoconf
+AUTOHEADER = ${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing autoheader
+AUTOMAKE = ${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing automake-1.15
 AWK = mawk
 CC = gcc
 CCAS = gcc
-CCASDEPMODE = depmode=gcc3
+CCASDEPMODE = depmode=none
 CCASFLAGS = -g -O2
-CCDEPMODE = depmode=gcc3
+CCDEPMODE = depmode=none
 CFLAGS = -g -O2
 CPP = gcc -E
 CPPFLAGS = 
@@ -548,7 +548,7 @@ LN_S = ln -s
 LTLIBOBJS = 
 LT_SYS_LIBRARY_PATH = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/missing makeinfo
+MAKEINFO = ${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/missing makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
@@ -583,10 +583,10 @@ SHELL = /bin/bash
 STRIP = strip
 SYMBOL_PREFIX = 
 VERSION = 1.6.21
-abs_builddir = /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng
-abs_srcdir = /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng
-abs_top_builddir = /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng
-abs_top_srcdir = /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng
+abs_builddir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng
+abs_srcdir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng
+abs_top_builddir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng
+abs_top_srcdir = /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
@@ -618,7 +618,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/haojing/node-master/test/addons-napi/1_hello_world/third-party/libpng/install-sh
+install_sh = ${SHELL} /home/haojing/node-master/test/addons-napi/xd-synchttp/src/third-party/libpng/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -1038,52 +1038,52 @@ include contrib/tools/$(DEPDIR)/png-fix-itxt.Po
 include contrib/tools/$(DEPDIR)/pngfix.Po
 
 .S.o:
-	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
-	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Po
-#	$(AM_V_CPPAS)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) \
-#	$(AM_V_CPPAS_no)$(CPPASCOMPILE) -c -o $@ $<
+#	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+#	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Po
+	$(AM_V_CPPAS)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) \
+	$(AM_V_CPPAS_no)$(CPPASCOMPILE) -c -o $@ $<
 
 .S.obj:
-	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
-	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Po
-#	$(AM_V_CPPAS)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) \
-#	$(AM_V_CPPAS_no)$(CPPASCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+#	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+#	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Po
+	$(AM_V_CPPAS)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) \
+	$(AM_V_CPPAS_no)$(CPPASCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .S.lo:
-	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
-	$(LTCPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Plo
-#	$(AM_V_CPPAS)source='$<' object='$@' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) \
-#	$(AM_V_CPPAS_no)$(LTCPPASCOMPILE) -c -o $@ $<
+#	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+#	$(LTCPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Plo
+	$(AM_V_CPPAS)source='$<' object='$@' libtool=yes \
+	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) \
+	$(AM_V_CPPAS_no)$(LTCPPASCOMPILE) -c -o $@ $<
 
 .c.o:
-	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
-	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Po
-#	$(AM_V_CC)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+#	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Po
+	$(AM_V_CC)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
-	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Po
-#	$(AM_V_CC)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+#	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Po
+	$(AM_V_CC)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
-	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Plo
-#	$(AM_V_CC)source='$<' object='$@' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LTCOMPILE) -c -o $@ $<
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+#	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Plo
+	$(AM_V_CC)source='$<' object='$@' libtool=yes \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(LTCOMPILE) -c -o $@ $<
 
 mostlyclean-libtool:
 	-rm -f *.lo
