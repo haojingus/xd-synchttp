@@ -5,16 +5,35 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/socket.h>
+
 #include <errno.h>
-#include <unistd.h>
-#include <netinet/in.h>
+
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
+# include <arpa/inet.h>
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <sys/select.h>
+# include <netinet/in.h>
+# include <unistd.h>
+# include <string.h>
+# include <errno.h>
+# include <netdb.h>
+#include <sys/time.h>
+typedef int SOCKET;
+#elif ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) 
+# include <winsock2.h>
+# include <windows.h>
+# include <ws2tcpip.h>
+#pragma comment (lib, "ws2_32.lib")
+# include <Ws2tcpip.h>
+#pragma comment(lib,"Ws2_32.lib")
+int gettimeofday(struct timeval *tp, void *tzp);
+typedef int socklen_t;
+#endif
+
 #include <limits.h>
-#include <netdb.h>
-#include <arpa/inet.h>
 #include <ctype.h>
 #include <time.h>
-#include <sys/time.h>
 #include <assert.h>
 #include <fcntl.h>
 
@@ -33,7 +52,7 @@ typedef enum
 
 typedef enum 
 {
-	GET=1,POST,PATCH,PUT,DELETE
+	GET=1,POST,PATCH,PUT,DEL
 } HTTP_METHOD;
 
 typedef struct
@@ -86,6 +105,15 @@ typedef struct
 	FREE_DSTRING(data->hd_request_body);\
 	free(data->hd_response_header);\
 	free(data);
+
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
+	#define CLOSE_SOCK(fd) \
+			close(fd);
+#else
+	#define CLOSE_SOCK(fd) \
+			closesocket(fd); \
+			WSACleanup();
+#endif
 
 #ifdef DEBUG
 	#define _DEBUG(msg) fprintf(stderr,"%s\n",msg);

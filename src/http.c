@@ -2,6 +2,29 @@
 
 //#include <node_api.h>
 //#include "../common.h"
+
+#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) 
+int gettimeofday(struct timeval *tp, void *tzp)
+{
+	time_t clock;
+	struct tm tm;
+	SYSTEMTIME wtm;
+	GetLocalTime(&wtm);
+	tm.tm_year = wtm.wYear - 1900;
+	tm.tm_mon = wtm.wMonth - 1;
+	tm.tm_mday = wtm.wDay;
+	tm.tm_hour = wtm.wHour;
+	tm.tm_min = wtm.wMinute;
+	tm.tm_sec = wtm.wSecond;
+	tm.tm_isdst = -1;
+	clock = mktime(&tm);
+	tp->tv_sec = clock;
+	tp->tv_usec = wtm.wMilliseconds * 1000;
+	return (0);
+}
+#endif
+
+
 void append_dstring(DSTRING* dest,char* source,int size)
 {
 	int len = dest->t_used;
@@ -11,7 +34,8 @@ void append_dstring(DSTRING* dest,char* source,int size)
 		//不够用了重分配
 		int buff_size = dest->t_size+2048+size;
 		char* sz_buff = (char*)malloc(buff_size);
-		bzero(sz_buff,buff_size);
+		//bzero(sz_buff,buff_size);
+		memset(sz_buff,0,sizeof(char)*buff_size);
 		memcpy(sz_buff,dest->t_string,len);
 		memcpy(sz_buff+len,source,size);
 		free(dest->t_string);
@@ -86,7 +110,8 @@ void byteToHexStr(const unsigned char* source, char* dest, int sourceLen)
 int byteToInt(const unsigned char* source,int len)
 {
 	char bytebuf[4];
-	bzero(bytebuf,4);
+	//bzero(bytebuf,4);
+	memset(bytebuf,0,sizeof(char)*4);
 	byteToHexStr(source,bytebuf,len);
 	printf("%s\n",bytebuf);
 	int result = (int)strtol(bytebuf,NULL,16);
@@ -110,7 +135,8 @@ void chunk_decode(HTTPDATA* source)
 	//printf("HTTP CODE:%d\n",source->hd_response_code);
 	int body_start_pos = ptr_http_header - source->hd_response->t_string+4;
 	//初始化header
-	bzero(source->hd_response_header,HEADERSIZE);
+
+	memset(source->hd_response_header,0,sizeof(char)*HEADERSIZE);
 	
 	memcpy(source->hd_response_header,source->hd_response->t_string,body_start_pos);
 	//printf("HTTP HEADER:\n%s\n",source->hd_response_header);
@@ -160,7 +186,7 @@ void chunk_decode(HTTPDATA* source)
 			body_length = source->hd_response->t_used - body_start_pos;
 		memmove(source->hd_response->t_string,source->hd_response->t_string+body_start_pos,body_length);
 		source->hd_response->t_used = body_length;
-		bzero(source->hd_response->t_string+source->hd_response->t_used,source->hd_response->t_size-source->hd_response->t_used);
+		memset(source->hd_response->t_string+source->hd_response->t_used,0,sizeof(char)*source->hd_response->t_size-source->hd_response->t_used);
 		
 		return;
 	}
@@ -176,13 +202,7 @@ void chunk_decode(HTTPDATA* source)
 	int chunk_header_pos,chunk_size;
 	DSTRING* p_chunked_content = (DSTRING*)malloc(sizeof(DSTRING));
 	INIT_DSTRING(p_chunked_content,source->hd_response->t_size);
-	/*
-	HTTPDATA* p_chunked_content = (HTTPDATA*)malloc(sizeof(HTTPDATA));
-	p_chunked_content->hd_response = (char*)malloc(source->hd_size);
-	bzero(p_chunked_content->hd_response,source->hd_size);
-	p_chunked_content->hd_used = 0;
-	p_chunked_content->hd_size = source->hd_size;
-	*/
+
 	//p_chunked_content->hd_redirect_count = 0;
 
 	int chunk_count = 0;
@@ -192,7 +212,7 @@ void chunk_decode(HTTPDATA* source)
 		chunk_header_pos = strstr(p_cursor,"\r\n")-p_cursor;
 		//printf("\n=========\nPOS:%d\n=========\n",chunk_header_pos);
 		//printf("\nChunked flag:%s\nLength:%s\n\n",sz_chunk_flag,sz_content_length);
-		bzero(sz_chunk_header,4096);
+		memset(sz_chunk_header,0,sizeof(char)*4096);
 		if(chunk_header_pos>4096||chunk_header_pos<=0)
 		{	fprintf(stderr,"ERROR memcpy header pos is %d\n",chunk_header_pos);
 			fprintf(stderr,"HEADER:%s\n=========\n",source->hd_response_header);
@@ -285,8 +305,16 @@ void get_host(char * src, char * web, char * file, int * port)  {
 
 int http(HTTPDATA* http_body,char* url,int timeout)
 {
-	_DEBUG("start http request");
-  int sockfd;
+#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) 
+  WSADATA wsaData; 
+  if(WSAStartup( MAKEWORD(2, 2), &wsaData)!= 0)
+    {
+		fprintf(stderr,"WSAStartup error！\n");
+		return -2;
+    }
+#endif
+  _DEBUG("start http request");
+  SOCKET sockfd;
   char buffer[1024];
   struct sockaddr_in server_addr;
   struct hostent *host;
@@ -301,42 +329,59 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 
   http_body->hd_timeout = timeout;
  //printf("parameter.1 is: %s\n", url);
-  //ToLowerCase(url);/*将参数转换为全小写*/
+  //ToLowerCase(url);
+  //将参数转换为全小写
   //printf("lowercase parameter.1 is: %s\n", url);
 
-  bzero(host_file,1024);
-  bzero(host_addr,256);
-  get_host(url, host_addr, host_file, &portnumber);/*分析网址、端口、文件名等*/
+  //bzero(host_file,1024);
+  //bzero(host_addr,256);
+  memset(host_file,0,sizeof(char)*1024);
+  memset(host_addr,0,sizeof(char)*256);
+  get_host(url, host_addr, host_file, &portnumber);
+  //分析网址、端口、文件名等
   //printf("webhost:%s\n", host_addr);
   //printf("hostfile:%s\n", host_file);
   //printf("portnumber:%d\n\n", portnumber);
+  //fprintf(stderr,"Host addr, %s\n", host_addr);
 
-  if((host=gethostbyname(host_addr))==NULL)/*取得主机IP地址*/
+  if((host=gethostbyname(host_addr))==NULL)//取得主机IP地址
   {
-    fprintf(stderr,"Gethostname error, %s\n", strerror(errno));
+    fprintf(stderr,"Gethostname error, %s\r\n", strerror(errno));
     return -2;
   }
 
-  /* 客户程序开始建立 sockfd描述符 */
-  if((sockfd=socket(AF_INET,SOCK_STREAM,0))==-1)/*建立SOCKET连接*/
+  // 客户程序开始建立 sockfd描述符 
+  if((sockfd=socket(AF_INET,SOCK_STREAM,0))==-1)//建立SOCKET连接
   {
     fprintf(stderr,"Socket Error:%s\a\n",strerror(errno));
     return -2;
   }
 
-  /* 客户程序填充服务端的资料 */
-  bzero(&server_addr,sizeof(server_addr));
+  // 客户程序填充服务端的资料 
+  //bzero(&server_addr,sizeof(server_addr));
+  memset(&server_addr,0,sizeof(server_addr));
   server_addr.sin_family=AF_INET;
   server_addr.sin_port=htons(portnumber);
   server_addr.sin_addr=*((struct in_addr *)host->h_addr);
 
   //修改为异步+select模式
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
   int flags = fcntl(sockfd, F_GETFL, 0);
   if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) < 0)
   {
 	fprintf(stderr,"Handle error by fcntl\n");
+	CLOSE_SOCK(sockfd);
 	return -2;
   }
+#else
+  int flags = 1;
+  if(ioctlsocket (sockfd, FIONBIO, (unsigned long *) &flags)<0)
+  {
+	fprintf(stderr,"ioctl error for win32\n");
+	CLOSE_SOCK(sockfd);
+	return -2;
+  }
+#endif
 
   fd_set rfds,wfds; 
   FD_ZERO(&rfds);
@@ -348,7 +393,13 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   //printf("Start conn\n");
   connect(sockfd,(struct sockaddr *)(&server_addr),sizeof(struct sockaddr));
   //printf("conning...\n");
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
+  //linux下select模型第一个参数是最大句柄数+1
   int maxfd = sockfd+1;
+#else
+  //windows下忽略select第一个参数
+  int maxfd = 0;
+#endif
   int select_result;
   int conn_enable = 0;
   struct timeval t_timeout;
@@ -363,7 +414,8 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 	  switch(select_result)
 	  {
 		case -1:
-			printf("select error!\n");
+			fprintf(stderr,"select error!\n");
+			CLOSE_SOCK(sockfd);
 			return -2;
 		case 0:
 			break;
@@ -379,6 +431,8 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 	  gettimeofday(&t_end, NULL);
 	  if ((t_end.tv_sec-t_start.tv_sec)>=timeout&&timeout!=0)
 		{
+			_DEBUG("time out");
+			CLOSE_SOCK(sockfd);
 			return -1;
 		}
 	  //printf("+");
@@ -388,12 +442,23 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   //printf("Conn spend: %ld us\n", t_end.tv_usec-t_start.tv_usec) ;
 
   //发送、接收改为同步，接收通过select实现异步
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux ) 
   flags = fcntl(sockfd, F_GETFL, 0);
   if (fcntl(sockfd, F_SETFL, 0) < 0)
   {
 	fprintf(stderr,"Handle error by fcntl\n");
+	CLOSE_SOCK(sockfd);
 	return -2;
   }
+#else
+  flags = 0;
+  if(ioctlsocket (sockfd, FIONBIO, (unsigned long *) &flags)<0)
+  {
+	fprintf(stderr,"Handle error by fcntl\n");
+	CLOSE_SOCK(sockfd);
+	return -2;
+  }
+#endif
 
   char sz_method[10];
   memset(sz_method,0,10);
@@ -411,7 +476,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 	case PUT:
 		strcpy(sz_method,"PUT");
 		break;
-	case DELETE:
+	case DEL:
 		strcpy(sz_method,"DELETE");
 		break;
 	default:
@@ -419,16 +484,17 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 		break;
   }
 
-  (http_body->hd_method==GET)?"GET":"POST";
+  //(http_body->hd_method==GET)?"GET":"POST";
   char sz_header[128];
   memset(sz_header,0,sizeof(char)*128);
   char *request = (char*)malloc(sizeof(char)*strlen(http_body->hd_request_body->t_string)+1024);
   if (http_body->hd_method==POST||http_body->hd_method==PUT||http_body->hd_method==PATCH)
 	sprintf(sz_header,"Content-Length: %d\r\nContent-Type: application/x-www-form-urlencoded\r\n",(int)strlen(http_body->hd_request_body->t_string));
   sprintf(request, "%s /%s HTTP/1.1\r\nAccept: */*\r\nAccept-Language: zh-cn\r\nUser-Agent: xd-synchttp\r\nHost: %s:%d\r\n%sConnection: Close\r\n\r\n%s", sz_method,host_file, host_addr, portnumber,sz_header, http_body->hd_request_body->t_string);
-  //printf("REQ:%s\n\nREQ Length:%d\n", request,strlen(request));/*准备request，将要发送给主机*/
+  //printf("REQ:%s\n\nREQ Length:%d\n", request,strlen(request));
+  //准备request，将要发送给主机
 
-  /*发送http请求request*/
+  //发送http请求request
   send_length = strlen(request);
   total_send = 0;
 
@@ -442,6 +508,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 	{
 		case -1:
 			fprintf(stderr,"select error");
+			CLOSE_SOCK(sockfd);
 			return -2;
 			break;
 		case 0:
@@ -457,7 +524,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 
   //printf("\nThe following is the response header:\n");
   //i=0;
-  /* 发送成功了，接收http响应，response */
+  // 发送成功了，接收http响应，response 
 
   total_recv = 0;
   //int recv_enable = 1;
@@ -472,7 +539,8 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 		switch(select_result)
 		{
 			case -1:
-				printf("error");
+				fprintf(stderr,"select error\n");
+				CLOSE_SOCK(sockfd);
 				return -2;
 				break;
 			case 0:
@@ -480,7 +548,8 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 			default:
 				if (FD_ISSET(sockfd,&rfds))
 				{
-					bzero(buffer,1024);
+					memset(buffer,0,1024);
+					//bzero(buffer,1024);
 					nbytes =  recv(sockfd, buffer, 1024, 0);
 					if (nbytes>0)
 						{
@@ -499,16 +568,11 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 				}
 				break;
 		}
-		/*
-		if (total_recv>1024&&is_display==0)
-		{
-			is_display=1;
-			fprintf(stderr,"RECV<<<\n%s\n\n",http_body->hd_response);
-		}*/
+
 	gettimeofday(&t_end, NULL);
 	if((t_end.tv_sec-t_start.tv_sec)>=timeout&&timeout!=0)
 	{
-		close(sockfd);
+		CLOSE_SOCK(sockfd);
 		return -1;
 	}
   }
@@ -516,8 +580,9 @@ int http(HTTPDATA* http_body,char* url,int timeout)
 	//printf("RECV:%s\n\nSIZE:%d\n",ptr->hd_response,ptr->hd_size);
   //printf("RECV Length:%d\n",total_recv);
   //fclose(fp);
-  /* 结束通讯 */
-  close(sockfd);
+  // 结束通讯 
+  CLOSE_SOCK(sockfd);
+
   _DEBUG("http request finished!\n");
   return 0;
   //exit(0);

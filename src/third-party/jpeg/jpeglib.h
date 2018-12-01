@@ -957,10 +957,10 @@ EXTERN(struct jpeg_error_mgr *) jpeg_std_error
  */
 #define jpeg_create_compress(cinfo) \
     jpeg_CreateCompress((cinfo), JPEG_LIB_VERSION, \
-			(size_t) sizeof(struct jpeg_compress_struct))
+			(size_t) sizeof(struct jpeg_compress_struct));
 #define jpeg_create_decompress(cinfo) \
     jpeg_CreateDecompress((cinfo), JPEG_LIB_VERSION, \
-			  (size_t) sizeof(struct jpeg_decompress_struct))
+			  (size_t) sizeof(struct jpeg_decompress_struct));
 EXTERN(void) jpeg_CreateCompress JPP((j_compress_ptr cinfo,
 				      int version, size_t structsize));
 EXTERN(void) jpeg_CreateDecompress JPP((j_decompress_ptr cinfo,

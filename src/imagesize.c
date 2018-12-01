@@ -41,7 +41,7 @@ void load_webimg(const char* url,HTTPDATA* ptr)
 IMAGE_FORMAT get_file_format(const char* path)
 {
 	char extname[16];
-	bzero(extname,16);
+	memset(extname,0,sizeof(char)*16);
 	if(right(path,extname,'.')<0)
 		return FORMAT_UNKNOWN;
 	if (strcmp(extname,".png")==0)

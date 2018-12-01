@@ -35,7 +35,13 @@ typedef unsigned char boolean;
 #ifdef JPEG_INTERNALS
 
 /* #undef RIGHT_SHIFT_IS_UNSIGNED */
+
+
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __SYMBIAN32__ )
 #define INLINE __inline__
+#else
+#define inline __inline
+#endif
 /* These are for configuring the JPEG memory manager. */
 /* #undef DEFAULT_MAX_MEM */
 /* #undef NO_MKTEMP */

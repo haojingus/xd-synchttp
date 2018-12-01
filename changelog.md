@@ -1,4 +1,9 @@
 # Changelog
+## v.0.4.0 - 1 Dec, 2018
+New support
+
+- Add Win32(ia32/amd64) support
+
 ## v.0.3.5 - 31 Oct, 2018
 Bugfixes
 

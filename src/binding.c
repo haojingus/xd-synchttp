@@ -224,7 +224,7 @@ static napi_value sync_http(napi_env env, napi_callback_info info) {
 	else if(strcmp(sz_method,"put")==0)
 		ptr->hd_method = PUT;
 	else if(strcmp(sz_method,"delete")==0)
-		ptr->hd_method = DELETE;
+		ptr->hd_method = DEL;
 	else
 		ptr->hd_method = GET;	
   }

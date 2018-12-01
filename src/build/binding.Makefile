@@ -3,4 +3,4 @@
 export builddir_name ?= ./build/.
 .PHONY: all
 all:
-	$(MAKE) libjpeg libhttp zlib libpng binding
+	$(MAKE) libhttp libjpeg zlib libpng binding
