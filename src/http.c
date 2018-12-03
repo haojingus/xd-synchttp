@@ -305,7 +305,7 @@ void get_host(char * src, char * web, char * file, int * port)  {
 
 int http(HTTPDATA* http_body,char* url,int timeout)
 {
-#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) || !defined(__APPLE__) 
+#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) && !defined(__APPLE__) 
   WSADATA wsaData; 
   if(WSAStartup( MAKEWORD(2, 2), &wsaData)!= 0)
     {
