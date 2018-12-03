@@ -3,7 +3,7 @@
 //#include <node_api.h>
 //#include "../common.h"
 
-#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) || !defined(__APPLE__) 
+#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) && !defined(__APPLE__) 
 int gettimeofday(struct timeval *tp, void *tzp)
 {
 	time_t clock;
