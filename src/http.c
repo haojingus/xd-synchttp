@@ -3,7 +3,7 @@
 //#include <node_api.h>
 //#include "../common.h"
 
-#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) 
+#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) || !defined(__APPLE__) 
 int gettimeofday(struct timeval *tp, void *tzp)
 {
 	time_t clock;
@@ -305,7 +305,7 @@ void get_host(char * src, char * web, char * file, int * port)  {
 
 int http(HTTPDATA* http_body,char* url,int timeout)
 {
-#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) 
+#if ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) || !defined(__APPLE__) 
   WSADATA wsaData; 
   if(WSAStartup( MAKEWORD(2, 2), &wsaData)!= 0)
     {
@@ -365,7 +365,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   server_addr.sin_addr=*((struct in_addr *)host->h_addr);
 
   //修改为异步+select模式
-#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux ) || defined(__APPLE__)
   int flags = fcntl(sockfd, F_GETFL, 0);
   if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) < 0)
   {
@@ -393,7 +393,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   //printf("Start conn\n");
   connect(sockfd,(struct sockaddr *)(&server_addr),sizeof(struct sockaddr));
   //printf("conning...\n");
-#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux ) || defined(__APPLE__)
   //linux下select模型第一个参数是最大句柄数+1
   int maxfd = sockfd+1;
 #else
@@ -442,7 +442,7 @@ int http(HTTPDATA* http_body,char* url,int timeout)
   //printf("Conn spend: %ld us\n", t_end.tv_usec-t_start.tv_usec) ;
 
   //发送、接收改为同步，接收通过select实现异步
-#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux ) 
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux ) || defined(__APPLE__) 
   flags = fcntl(sockfd, F_GETFL, 0);
   if (fcntl(sockfd, F_SETFL, 0) < 0)
   {
@@ -621,7 +621,7 @@ append_dstring(ptr->hd_request_body,"a=111&b=222",strlen("a=111&b=222"));
 
   int ret = http(ptr,url,0);
   int before = ptr->hd_response->t_used;
-  printf("RECV<<<\n%s\n",ptr->hd_response);
+  printf("RECV<<<\n%s\n",ptr->hd_response->t_string);
   chunk_decode(ptr);
   printf("HTTP BODY>>>\n%s\n===============\n",ptr->hd_response->t_string);
   printf("before chunked length:%d\n\n",before);

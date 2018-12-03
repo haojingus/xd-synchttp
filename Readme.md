@@ -10,6 +10,12 @@ Install with:
 
     npm install xd-synchttp
 
+## OS support
+Linux-x64  
+Win32(x64/ia32)  
+MacOS(x64)  
+
+
 ## Usage Example
 
 ```js
@@ -22,8 +28,14 @@ var timeout = 3;
 var post_data = {"field1":"1","field2":"2"};
 var url = "http://www.baidu.com";
 try{
+	/*
+	this is old function!
 	response_get = sync.http_get(url,timeout);
 	response_post = sync.http_post(url,post_data,timeout);
+	*/
+	//notify! you can call it by sync.sync_http(url);
+	response_get = sync.sync_http(url,'get',{},timeout);
+	response_post = sync.sync_http(url,'post',post_data,timeout);
 	image_size = sync.get_image_size("http://wmod.66rpg.com/res/loading.gif");
 
 }
@@ -43,17 +55,27 @@ not supported
 
 ## API
 
-### "http_get"
+### "http_get"  
+
+*you can use sync_http to instead of deprecated API*  
 
 http_get(string,number);
 
 `http_get` send a GET request
 
-### "http_post"
+### "http_post"  
+
+*you can use sync_http to instead of deprecated API*  
 
 http_post(string,object,number);
 
 `http_post` send a POST request
+
+### "sync_http"
+
+sync_http(string,string,object,number)
+
+'sync_http' send a http request,support RESUFUL(get,post,delete,put,patch)
 
 ### "get_image_size"
 

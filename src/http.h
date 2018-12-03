@@ -8,7 +8,7 @@
 
 #include <errno.h>
 
-#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux ) || defined(__APPLE__)
 # include <arpa/inet.h>
 # include <sys/types.h>
 # include <sys/socket.h>
@@ -20,7 +20,7 @@
 # include <netdb.h>
 #include <sys/time.h>
 typedef int SOCKET;
-#elif ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) 
+#elif ( defined( _WIN32 ) || defined( _WIN32_WCE ) ) && !defined( __linux__ ) && !defined( __linux ) && !defined(__APPLE__)
 # include <winsock2.h>
 # include <windows.h>
 # include <ws2tcpip.h>
@@ -106,7 +106,7 @@ typedef struct
 	free(data->hd_response_header);\
 	free(data);
 
-#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux )
+#if ( !defined( _WIN32 ) && !defined( _WIN32_WCE ) ) || defined( __linux__ ) || defined( __linux ) || defined(__APPLE__)
 	#define CLOSE_SOCK(fd) \
 			close(fd);
 #else

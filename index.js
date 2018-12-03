@@ -20,3 +20,13 @@ else if(os_type=='linux')
     else
         console.log('not support this arch!');
 }
+else if(os_type=='darwin')
+{
+    if (arch=='x64')
+        module.exports = require('./vendor/darwin-x86-amd64/binding');
+    else
+        console.log('not support this arch!');
+}
+else
+	console.log('not support this arch!');
+

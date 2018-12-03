@@ -1,1 +1,1 @@
-cmd_Release/binding.node := rm -rf "Release/binding.node" && cp -af "Release/obj.target/binding.node" "Release/binding.node"
+cmd_Release/binding.node := c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.7 -arch x86_64 -L./Release -stdlib=libc++  -o Release/binding.node Release/obj.target/binding/png.o Release/obj.target/binding/jpeg.o Release/obj.target/binding/gif.o Release/obj.target/binding/imagesize.o Release/obj.target/binding/binding.o Release/http.a Release/png.a Release/jpeg.a Release/zlib.a 
