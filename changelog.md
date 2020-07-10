@@ -1,4 +1,10 @@
 # Changelog
+## v.0.4.6 - 11 Jul, 2020
+Bugfixes
+
+- Fix buffer overflow from imagesize.c
+- remove old version support
+
 ## v.0.4.0 - 1 Dec, 2018
 New support
 
