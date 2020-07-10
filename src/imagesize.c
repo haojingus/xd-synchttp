@@ -40,17 +40,17 @@ void load_webimg(const char* url,HTTPDATA* ptr)
 
 IMAGE_FORMAT get_file_format(const char* path)
 {
-	char extname[16];
-	memset(extname,0,sizeof(char)*16);
-	if(right(path,extname,'.')<0)
-		return FORMAT_UNKNOWN;
+	char* extname = (char*)calloc(strlen(path),sizeof(char));
+	IMAGE_FORMAT ret = FORMAT_UNKNOWN;
+	right(path,extname,'.');
 	if (strcmp(extname,".png")==0)
-		return FORMAT_PNG;
+		ret = FORMAT_PNG;
 	if (strcmp(extname,".jpeg")==0||strcmp(extname,".jpg")==0)
-		return FORMAT_JPEG;
+		ret = FORMAT_JPEG;
 	if (strcmp(extname,".gif")==0)
-		return FORMAT_GIF;
-	return FORMAT_UNKNOWN;
+		ret = FORMAT_GIF;
+	free(extname);
+	return ret;
 	
 }
 
@@ -90,12 +90,12 @@ int get_image_size(const char* uri,IMAGE_SIZE* size)
 
 	return ret;
 }
-/*
 int main(int argc,char** argv)
 {
 	IMAGE_SIZE t_size = {0,0};
 	
-	 if(get_image_size("http://pic.cgyouxi.com/orange/upload/201806/517168_26530f062578ce042e2cbf402e7f5860.jpg",&t_size)==0)
+	 //if(get_image_size("http://pic.cgyouxi.com/orange/upload/201806/517168_26530f062578ce042e2cbf402e7f5860.jpg",&t_size)==0)
+	 if(get_image_size("https://mxcdn.cgyouxi.com/res_ver3/a7/a7efa2daba613bce48b67992077b59ab",&t_size)==0)
 		printf("JPEG W:%d H:%d\n",t_size.width,t_size.height);
 	 if(get_image_size("http://d.lanrentuku.com/down/png/1712/23haidiyulei-png/haidiyuleipng-013.png",&t_size)==0)
 		printf("PNG W:%d H:%d\n",t_size.width,t_size.height);
@@ -123,4 +123,3 @@ int main(int argc,char** argv)
 }
 
 
-*/

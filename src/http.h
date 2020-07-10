@@ -41,7 +41,7 @@ typedef int socklen_t;
 
 #define HEADERSIZE 4096
 #define SENDBUFFSZIE 1024
-#define MAXREDIRECT 3
+#define MAXREDIRECT 5
 #define MIMESIZE 96
 #define URLSIZE 1024
 
