@@ -1,6 +1,6 @@
 {
   "name": "xd-synchttp",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "sync http request",
   "main": "index.js",
   "scripts": {

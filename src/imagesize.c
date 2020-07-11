@@ -90,6 +90,7 @@ int get_image_size(const char* uri,IMAGE_SIZE* size)
 
 	return ret;
 }
+/*
 int main(int argc,char** argv)
 {
 	IMAGE_SIZE t_size = {0,0};
@@ -122,4 +123,4 @@ int main(int argc,char** argv)
 	return 0;
 }
 
-
+*/
