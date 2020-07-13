@@ -13,8 +13,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/times.h>
+#include <sys/time.h>
 #include <sys/select.h>
-
+#include <unistd.h>
 #define MAXBUF 1024
 
 void show_certs(SSL *ssl){
@@ -54,7 +55,8 @@ OpenSSL_add_all_algorithms();
 //load all errors
 SSL_load_error_strings();
 
-ctx = SSL_CTX_new(SSLv23_client_method());
+//ctx = SSL_CTX_new(SSLv23_client_method());
+ctx = SSL_CTX_new(TLSv1_2_client_method());
 printf("ctx address:%ld\n",ctx);
 if(ctx == NULL){
 	ERR_print_errors_fp(stdout);
@@ -77,6 +79,7 @@ bzero(&dest,sizeof(dest));
 dest.sin_family = AF_INET;
 dest.sin_port = htons(443);
 if(inet_aton("175.24.44.40",&dest.sin_addr)==0){
+//if(inet_aton("120.26.62.51",&dest.sin_addr)==0){
 printf("ip convert error!\n");
 exit(1);
 }
@@ -110,7 +113,9 @@ show_certs(ssl);
 char buffer[MAXBUF+1];
 
 bzero(buffer,MAXBUF+1);
-strcpy(buffer,"GET / HTTP/1.0\r\nAccept: */*\r\n\r\n");
+//strcpy(buffer,"GET /api/tools/k HTTP/1.1\r\nHost: kj.shengshiwp.com\r\nAccept: */*\r\n\r\n");
+strcpy(buffer,"GET / HTTP/1.1\r\nHost: www.made2020.cn\r\nAccept: */*\r\n\r\n");
+
 len = SSL_write(ssl,buffer,strlen(buffer));
 if(len<0)
 {	
@@ -132,27 +137,44 @@ int select_ret;
 fd_set rd_fds;
 FD_ZERO(&rd_fds);
 FD_SET(sockfd,&rd_fds);
-int buff_size = 0;
+int buff_size = 1;
 int read_size = 0;
+len =0;
+struct timeval timeout;
+timeout.tv_sec = 0;
+timeout.tv_usec = 200000;
 while(1)
 {
-	select_ret = select(FD_SETSIZE,&rd_fds,NULL,NULL,0);
+	FD_ZERO(&rd_fds);
+	FD_SET(sockfd,&rd_fds);
+	select_ret = select(sockfd+1,&rd_fds,NULL,NULL,&timeout);
 	if(select_ret>=1){
 		if(FD_ISSET(sockfd,&rd_fds))
 		{
-			buff_size = SSL_pending(ssl);
-			if(buff_size==0)
-				break;
-			printf("pending size:%d\n",buff_size);
+			//active first read
+			len = SSL_read(ssl,headers,1);
+			while((buff_size = SSL_pending(ssl))>0)
+			{
+				len = SSL_read(ssl,headers,buff_size);
+				printf("Data:%s\n",headers);
+			}
+		}
+	}
+	else if(buff_size==0){
+		break;
+	}
+}
+			//printf("[pending]ssl error no:%d\n",SSL_get_error(ssl,buff_size));
+			//}
+//			if (buff_size==0)
+//				break;
+//			printf("pending size:%d\n",buff_size);
+//			len = SSL_read(ssl,headers,(buff_size==0)?1:buff_size);
+//			printf("[read]ssl error no:%d\n",SSL_get_error(ssl,len));
 
-			while((len=SSL_read(ssl,buffer,1)) == 1){
-				read_size++;
-				if(read_size>=buff_size)
-				{
-					break;
-				}
-				*headers = buffer[0];
-				headers++;
+			//while((len+=SSL_read(ssl,headers,buff_size)) >0){
+
+			/*
 				if(i<4){
 					if(buffer[0]=='\r'||buffer[0]=='\n'){
 						i++;
@@ -167,12 +189,52 @@ while(1)
 				{
 					i = 0;
 				}
-			}
-		}
-    }
-		
+				*/
+			//	printf("data=========:>%s\n",headers);
+//				printf("\n\n len=%d,buffSize=%d\n",len,buff_size);
+			//	if (len>=buff_size)
+			//		break;
+			//}
+/*
+select_ret = select(FD_SETSIZE,&rd_fds,NULL,NULL,0);
+if(select_ret>=1){
+	if(FD_ISSET(sockfd,&rd_fds))
+	{
+
+		len=SSL_read(ssl,buffer,1);
+
+		buff_size = SSL_pending(ssl);
+		printf("\n\nfirst read pending==>%d\n",buff_size);
+
+		len=SSL_read(ssl,headers,buff_size);
+		printf("ssl error no:%d\n",SSL_get_error(ssl,len));
+		printf("header length:%d  pending==>%d\n",len,SSL_pending(ssl));
+		//printf("\n\n**********************\nheader:===>%c%s\n",buffer[0],headers);
+
+		len=SSL_read(ssl,buffer,1);
+		printf("second step 1.ssl error no:%d\n",SSL_get_error(ssl,len));
+
+		len=SSL_read(ssl,headers,len);
+		printf("second step 1.ssl error no:%d\n",SSL_get_error(ssl,len));
+		printf("second pending==>%d\n",SSL_pending(ssl));
+		//printf("\nfinal data===>%c%s\n",buffer[0],headers);
+
+		len=SSL_read(ssl,buffer,1);
+		len=SSL_read(ssl,headers,len);
+		printf("final pending==>%d\n",SSL_pending(ssl));
+		//printf("\nfinal data===>%c%s\n",buffer[0],headers);
+
+	}
+	else
+	{
+		printf("unable read data\n");
+	}
 }
-printf("header:===>%s\n",start);
+else
+{
+	printf("select retcode %d\n",select_ret);
+}
+*/
 free(start);
 
 SSL_shutdown(ssl);
